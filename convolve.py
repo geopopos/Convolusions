@@ -1,0 +1,38 @@
+"""
+Program Name: Convolution
+Purpose: Program that takes an image and a filter that is both square and odd in size and returns a convoluted image
+Author: George Roros
+References:
+1.
+"""
+ 
+import numpy as np
+import cv2
+
+#Read in image file as array
+img = np.array(cv2.imread('bird.jpg', 1), dtype='f')
+#Get height and width of image array
+height, width = img.shape[:2]
+
+#Create 3x3 filter to convolute image
+filter = np.array([[0.05, 0.10, 0.05],
+                   [0.10, 0.40, 0.05],
+                   [0.05, 0.10, 0.05]])
+
+print filter
+
+img2 = []
+
+for i in range(0, height):
+    for j in range(0, width):
+       """ if i == 0 and not j == 0 and not j == width-1 or j == 0 and not i ==0 and not i == height - 1:
+            print ("%d %d" %(i, j))
+        else:
+            print "0"
+"""
+
+
+#Dispaly new image and wait for user input to close end program
+cv2.imshow('bird', img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()

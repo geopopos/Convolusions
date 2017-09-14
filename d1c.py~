@@ -1,0 +1,16 @@
+#program that convolutes a 1d array 'image'
+import numpy as np
+
+array = np.array([21, 8, 12, 13, 5, 19, 38])
+filter = np.array([-1, 0, 1])
+
+width = array.shape[:2]
+
+avg = 0
+
+for i in range(0, width):
+    avg += array[i]
+
+avg = avg/width
+
+print avg
