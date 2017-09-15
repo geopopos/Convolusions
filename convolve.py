@@ -9,56 +9,49 @@ References:
 import numpy as np
 import cv2
 
-#Read in image file as array
-img = np.array(cv2.imread('bird.jpg', 1), dtype='f')
-#Get height and width of image array
-height, width = img.shape[:2]
-
-#Create 3x3 filter to convolute image
-filter = np.array([[1., 1., 1.],
-                   [1., 1., 1.],
-                   [1., 1., 1.]], dtype='f')
-
-filter = np.multiply(filter, 0.1111111)
-
-fHeight, fWidth = filter.shape[:2]
-hfHeight = fHeight/2
-hfWidth = fWidth/2
-img2 = []
-
-for i in range(hfHeight, height-hfHeight):
-    column = []
-    for j in range(hfWidth, width-hfWidth):
-        iMin = i-hfHeight
-        iMax = i+hfHeight+1
-        jMin = j-hfHeight
-        jMax = j+hfHeight+1
-        arrayFrag = img[iMin:iMax, jMin:jMax]
-        arrayFrag = np.divide(arrayFrag, 255.0)
-        #After the matrix multiplication the tmpArray Values zero out
-        tmpArray = filter.dot(arrayFrag)
-        tmpPixel = [0,0,0]
-        for k in range(0, fHeight):
-            for l in range(0, fWidth):
-                tmpPixel = np.add(tmpPixel, tmpArray[k][l])
-        column.append(tmpPixel)
-    img2.append(column)
-                    
-
-MIN = np.amin(img2)
-MAX = np.amax(img2)
-
-img2 = np.array(img2, dtype='f')
-print img2.shape[:2]
-print img2
-
-"""for i in range(hfHeight, height-hfHeight-1):
-    for j in range(hfWidth, width-hfWidth-1):
-        for k in range(0, 3):
-            print("i:%d j:%d k:%d" %(i, j, k))
-            img2[i][j][k] = (img2[i][j][k] - MIN)/(MAX - MIN)
-            print img[i][j][k]
 """
+FUNCTION: apply filter to image
+PARAMETERS: img, filter
+    img - the image upon which the filter will be applied
+    filter - the filter to apply to the image
+RETURN: numpy array with convoluted image
+"""
+def applyFilter(img, filter):
+    height, width = img.shape[:2]
+    try:
+        fHeight, fWidth = filter.shape[:2]
+    except:
+        fHeight, fWidth = (1, 1)
+    
+    hfHeight = fHeight/2
+    hfWidth = fWidth/2
+    
+    #create new list to hold image
+    img2 = []
+
+    for i in range(hfHeight, height-hfHeight):
+        column = []
+        for j in range(hfWidth, width-hfWidth):
+            iMin = i-hfHeight
+            iMax = i+hfHeight+1
+            jMin = j-hfHeight
+            jMax = j+hfHeight+1
+            arrayFrag = img[iMin:iMax, jMin:jMax]
+            # arrayFrag = np.divide(arrayFrag, 255.0)
+            #After the matrix multiplication the tmpArray Values zero out
+            tmpPixel = [0,0,0]
+            for k in range(0, fHeight):
+                for l in range(0, fWidth):
+                    for m in range(0, 3):
+                        try:
+                            tmpPixel[m] += filter[k][l] * arrayFrag[k][l][m]
+                        except:
+                            tmpPixel[m] += filter[k] * arrayFrag[k][l][m]
+            column.append(tmpPixel)
+        img2.append(column)
+
+    img2 = np.array(img2, dtype='f')
+    return img2
 
 """
 for each pixel apply the filter based on its size
@@ -71,8 +64,28 @@ print ("%d %d" %(i, j))
 else:
 print "0"
 """
+#MAIN
+
+#Read in image file as array
+img = np.array(cv2.imread('nycpopo.jpg', 1), dtype='f')
+#Get height and width of image array
+img = np.divide(img, 255.0)
+#Create nXn filter to convolute image
+# filter = np.array([[1, 4, 6, 4, 1],
+#                     [4, 16, 24, 16, 4],
+#                     [6, 24, 36, 24, 6],
+#                     [4, 16, 24, 16, 4],
+#                     [1, 4, 6, 4, 1]], dtype='f')
+# filter = np.multiply(filter, 0.00390625)
+
+filter = np.array([[-1, -1, -1],
+                    [-1, 8, -1],
+                    [-1, -1, -1]], dtype='f')
+
+img2 = applyFilter(img, filter)
 
 #Dispaly new image and wait for user input to close end program
+cv2.imshow('lickmybird', img)
 cv2.imshow('bird', img2)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
