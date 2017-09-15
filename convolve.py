@@ -95,7 +95,7 @@ filter = np.array([1], dtype='f')
 img2 = applyFilter(img, filter)
 
 #Dispaly new image and wait for user input to close end program
-cv2.imshow('lickmybird', img)
-cv2.imshow('bird', img2)
+cv2.imshow('Original Image', img)
+cv2.imshow('Convoluted Image', img2)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
