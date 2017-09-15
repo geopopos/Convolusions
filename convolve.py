@@ -48,13 +48,12 @@ def applyFilter(img, filter):
                             #calculate new pixel value
                             tmpPixel[m] += filter[k][l] * arrayFrag[k][l][m]
                         except IndexError:
-                            #if filter size is 1-Dimensional only check for 1-Dimensional index
-                            tmpPixel[m] += filter[k] * arrayFrag[k][l][m]
-                        except IndexError:
-                            #if part of arrayFrag is out of index skip addition jump to next index
-                            pass
-                        except:
-                            print "UError: Unknown error check pixel addition"
+                            try:
+                                #if filter size is 1-Dimensional only check for 1-Dimensional index
+                                tmpPixel[m] += filter[k] * arrayFrag[k][l][m]
+                            except IndexError:
+                                #if part of arrayFrag is out of index skip addition jump to next index
+                                pass
             column.append(tmpPixel)
         img2.append(column)
 
@@ -87,11 +86,12 @@ img = np.divide(img, 255.0)
 #                     [1, 4, 6, 4, 1]], dtype='f')
 # filter = np.multiply(filter, 0.00390625)
 
-# filter = np.array([[-1, -1, -1],
-#                     [-1, 8, -1],
-#                     [-1, -1, -1]], dtype='f')
+filter = np.array([[-1, -1, -1],
+                    [-1, 8, -1],
+                    [-1, -1, -1]], dtype='f')
 
-filter = np.array([1], dtype='f')
+# filter = np.array([1], dtype='f')
+
 img2 = applyFilter(img, filter)
 
 #Dispaly new image and wait for user input to close end program
