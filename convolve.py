@@ -4,6 +4,7 @@ Purpose: Program that takes an image and a filter that is both square and odd in
 Author: George Roros
 References:
 1. George's Brain
+2. https://en.wikipedia.org/wiki/Kernel_(image_processing) - used for filters(edge detection gaussian blur)
 """
  
 import numpy as np
@@ -29,9 +30,9 @@ def applyFilter(img, filter):
     #create new list to hold image
     img2 = []
 
-    for i in range(hfHeight, height-hfHeight):
+    for i in range(0, height):
         column = []
-        for j in range(hfWidth, width-hfWidth):
+        for j in range(0, width):
             iMin = i-hfHeight
             iMax = i+hfHeight+1
             jMin = j-hfHeight
@@ -44,9 +45,16 @@ def applyFilter(img, filter):
                 for l in range(0, fWidth):
                     for m in range(0, 3):
                         try:
+                            #calculate new pixel value
                             tmpPixel[m] += filter[k][l] * arrayFrag[k][l][m]
-                        except:
+                        except IndexError:
+                            #if filter size is 1-Dimensional only check for 1-Dimensional index
                             tmpPixel[m] += filter[k] * arrayFrag[k][l][m]
+                        except IndexError:
+                            #if part of arrayFrag is out of index skip addition jump to next index
+                            pass
+                        except:
+                            print "UError: Unknown error check pixel addition"
             column.append(tmpPixel)
         img2.append(column)
 
@@ -71,6 +79,7 @@ img = np.array(cv2.imread('nycpopo.jpg', 1), dtype='f')
 #Get height and width of image array
 img = np.divide(img, 255.0)
 #Create nXn filter to convolute image
+# **ref 2
 # filter = np.array([[1, 4, 6, 4, 1],
 #                     [4, 16, 24, 16, 4],
 #                     [6, 24, 36, 24, 6],
@@ -78,10 +87,11 @@ img = np.divide(img, 255.0)
 #                     [1, 4, 6, 4, 1]], dtype='f')
 # filter = np.multiply(filter, 0.00390625)
 
-filter = np.array([[-1, -1, -1],
-                    [-1, 8, -1],
-                    [-1, -1, -1]], dtype='f')
+# filter = np.array([[-1, -1, -1],
+#                     [-1, 8, -1],
+#                     [-1, -1, -1]], dtype='f')
 
+filter = np.array([1], dtype='f')
 img2 = applyFilter(img, filter)
 
 #Dispaly new image and wait for user input to close end program
