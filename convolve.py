@@ -74,7 +74,7 @@ print "0"
 #MAIN
 
 #Read in image file as array
-img = np.array(cv2.imread('nycpopo.jpg', 1), dtype='f')
+img = np.array(cv2.imread('bald-eagle-1.jpg', 1), dtype='f')
 #Get height and width of image array
 img = np.divide(img, 255.0)
 #Create nXn filter to convolute image
